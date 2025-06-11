@@ -1,0 +1,2 @@
+void pravyEncoderAInt();
+void levyEncoderAInt();
