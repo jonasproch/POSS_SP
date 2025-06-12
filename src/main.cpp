@@ -1,3 +1,4 @@
+#include <MeBaseBoard.h>
 #include "helpers/actions.h"
 #include "helpers/config.h"
 #include "helpers/encoder.h"

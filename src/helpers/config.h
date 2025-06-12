@@ -7,7 +7,33 @@
 #include "MeUltrasonicSensor.h"
 
 // Debug mód
-extern const bool debugMode = false;
+extern const bool debugMode;
+
+// Typy detekovaných křižovatek/událostí
+enum TypKrizovatky {
+  ZADNY,
+  KRIZOVATKA_T,
+  KRIZOVATKA_L,
+  KRIZOVATKA_P,
+  SLEPA_ULICKA
+};
+
+// Stavový automat
+enum State {
+  INIT,
+  MAPOVANI_JEDU,
+  MAPOVANI_KRIZOVATKA,
+  MAPOVANI_OVERUJI_ROVNE,
+  MAPOVANI_OTACIM_VLEVO,
+  MAPOVANI_OTACIM_VPRAVO,
+  MAPOVANI_VZAD,
+  MAPOVANI_DOKONCENO,
+  RYCHLY_PRUJEZD_JEDU,
+  RYCHLY_PRUJEZD_OTOCKA,
+  CIL,
+  STOP,
+  CHYBA
+};
 
 // Počáteční stav
 extern State aktualniStav;
@@ -85,30 +111,4 @@ extern MeUltrasonicSensor sonar;
 // Snímač čáry
 extern MeRGBLineFollower RGBLineFollower;
 
-// Stavový automat
-enum State {
-  INIT,
-  MAPOVANI_JEDU,
-  MAPOVANI_KRIZOVATKA,
-  MAPOVANI_OVERUJI_ROVNE,
-  MAPOVANI_OTACIM_VLEVO,
-  MAPOVANI_OTACIM_VPRAVO,
-  MAPOVANI_VZAD,
-  MAPOVANI_DOKONCENO,
-  RYCHLY_PRUJEZD_JEDU,
-  RYCHLY_PRUJEZD_OTOCKA,
-  CIL,
-  STOP,
-  CHYBA
-};
-
 extern const int DOBA_POPOJETI_MS;
-
-// Typy detekovaných křižovatek/událostí
-enum TypKrizovatky {
-  ZADNY,
-  KRIZOVATKA_T,
-  KRIZOVATKA_L,
-  KRIZOVATKA_P,
-  SLEPA_ULICKA
-};

@@ -1,9 +1,4 @@
-#include <Servo.h>
-#include "MeBuzzer.h"
-#include "MeGyro.h"
-#include "MeRGBLed.h"
-#include "MeRGBLineFollower.h"
-#include "MeUltrasonicSensor.h"
+#include "config.h"
 
 // Debug mód
 const bool debugMode = false; // Pro tisk na Serial
@@ -84,30 +79,4 @@ MeUltrasonicSensor sonar(PORT_10);
 // Snímač čáry
 MeRGBLineFollower RGBLineFollower(PORT_9);
 
-// Stavový automat
-enum State {
-  INIT,
-  MAPOVANI_JEDU,
-  MAPOVANI_KRIZOVATKA,
-  MAPOVANI_OVERUJI_ROVNE,
-  MAPOVANI_OTACIM_VLEVO,
-  MAPOVANI_OTACIM_VPRAVO,
-  MAPOVANI_VZAD,
-  MAPOVANI_DOKONCENO,
-  RYCHLY_PRUJEZD_JEDU,
-  RYCHLY_PRUJEZD_OTOCKA,
-  CIL,
-  STOP,
-  CHYBA
-};
-
 const int DOBA_POPOJETI_MS = 350;
-
-// Typy detekovaných křižovatek/událostí
-enum TypKrizovatky {
-  ZADNY,
-  KRIZOVATKA_T,  // Všechny senzory na černé (0b0000)
-  KRIZOVATKA_L,  // Odbočka pouze vlevo (0b1000)
-  KRIZOVATKA_P,  // Odbočka pouze vpravo (0b0001)
-  SLEPA_ULICKA   // Všechny senzory na bílé (0b1111)
-};
