@@ -1,7 +1,7 @@
 #include "helpers/config.h"
-#include "helpers/sensor.h"
 #include "helpers/led.h"
 #include "helpers/motor.h"
+#include "helpers/sensor.h"
 #include "helpers/sound.h"
 
 void stavovyAutomat() {
@@ -17,13 +17,32 @@ void stavovyAutomat() {
     posledniCas = aktualniCas;
   }
 
-  State predchoziStavAutomatu = aktualniStav;
+  byte sensorNonFiltered = RGBLineFollower.getPositionState();
 
-  Serial.print("Aktualni stav: ");
-  Serial.println(aktualniStav);
+  State predchoziStavAutomatu = aktualniStav;
 
   switch (aktualniStav) {
     case MAPOVANI_JEDU: {
+      // Ztráta čáry levá
+      if (sensorNonFiltered == 11) {
+        if (debugMode)
+          Serial.println("Detekce: Ztrata cary leva!");
+
+        pravyMotorStop();
+        levyMotorVpred(rychlostJizdy);
+        delay(25);
+      }
+
+      // Ztráta čáry prává
+      if (sensorNonFiltered == 13 || sensorNonFiltered == 12) {
+        if (debugMode)
+          Serial.println("Detekce: Ztrata cary prava!");
+
+        levyMotorStop();
+        pravyMotorVpred(rychlostJizdy);
+        delay(25);
+      }
+
       // Slepá ulička
       if (sensorStateFull == 15 &&
           predchoziStavAutomatu != MAPOVANI_KRIZOVATKA) {
@@ -69,26 +88,6 @@ void stavovyAutomat() {
         aktualniStav = MAPOVANI_KRIZOVATKA;
       }
 
-      // Ztráta čáry levá
-      if (sensorStateFull == 11) {
-        if (debugMode)
-          Serial.println("Detekce: Ztrata cary leva!");
-
-        pravyMotorStop();
-        levyMotorVpred(rychlostJizdy);
-        delay(25);
-      }
-
-      // Ztráta čáry prává
-      if (sensorStateFull == 13 || sensorStateFull == 12) {
-        if (debugMode)
-          Serial.println("Detekce: Ztrata cary prava!");
-
-        levyMotorStop();
-        pravyMotorVpred(rychlostJizdy);
-        delay(25);
-      }
-
       // Jízda rovně
       if (sensorStateFull == 9) {
         nastavLEDv2(1, LED_ZELENA);
@@ -132,42 +131,44 @@ void stavovyAutomat() {
               "Resim krizovatku (T nebo P) -> Pravidlo #2: "
               "Pokracuji ROVNE.");
 
-        aktualniStav = MAPOVANI_OVERUJI_ROVNE;
-      }
-
-      break;
-    }
-
-    case MAPOVANI_OVERUJI_ROVNE: {
-      Serial.println("hit MAPOVANI_OVERUJI_ROVNE");
-
-      levyMotorVpred(rychlostJizdy);
-      pravyMotorVpred(rychlostJizdy);
-      delay(100);
-
-      zastavVse();
-      delay(100);
-
-      RGBLineFollower.loop();
-      int stavPoPopojeti = filtrujSenzor();
-      delay(100);
-
-      RGBLineFollower.loop();
-      stavPoPopojeti = filtrujSenzor();
-
-      if (stavPoPopojeti == 9) {
+        levyMotorVpred(rychlostJizdy);
+        pravyMotorVpred(rychlostJizdy);
         aktualniStav = MAPOVANI_JEDU;
-      } else {
-        levyMotorVzad(rychlostJizdy);
-        pravyMotorVzad(rychlostJizdy);
-        delay(100);
-
-        zastavVse();
-        aktualniStav = MAPOVANI_OTACIM_VPRAVO;
       }
 
       break;
     }
+
+    // case MAPOVANI_OVERUJI_ROVNE: {
+    //   Serial.println("hit MAPOVANI_OVERUJI_ROVNE");
+
+    //   levyMotorVpred(rychlostJizdy);
+    //   pravyMotorVpred(rychlostJizdy);
+    //   delay(100);
+
+    //   zastavVse();
+    //   delay(100);
+
+    //   RGBLineFollower.loop();
+    //   int stavPoPopojeti = filtrujSenzor();
+    //   delay(100);
+
+    //   RGBLineFollower.loop();
+    //   stavPoPopojeti = filtrujSenzor();
+
+    //   if (stavPoPopojeti == 9) {
+    //     aktualniStav = MAPOVANI_JEDU;
+    //   } else {
+    //     levyMotorVzad(rychlostJizdy);
+    //     pravyMotorVzad(rychlostJizdy);
+    //     delay(100);
+
+    //     zastavVse();
+    //     aktualniStav = MAPOVANI_OTACIM_VPRAVO;
+    //   }
+
+    //   break;
+    // }
 
     case MAPOVANI_OTACIM_VLEVO: {
       zastavVse();
@@ -250,9 +251,8 @@ void stavovyAutomat() {
 
     case MAPOVANI_VZAD: {
       boolean turningBack = true;
-      pravyMotorVpred(150);
-      levyMotorVzad(150);
-      delay(400);
+      pravyMotorVzad(rychlostOtaceni);
+      levyMotorVpred(rychlostOtaceni);
 
       while (turningBack == true) {
         RGBLineFollower.loop();
@@ -332,10 +332,15 @@ void stavovyAutomat() {
       break;
   }
 
-  if (aktualniStav != predchoziStavAutomatu && debugMode) {
-    Serial.print("Zmena stavu z ");
-    Serial.print(predchoziStavAutomatu);
-    Serial.print(" na ");
+  if (predchoziStavAutomatu != aktualniStav) {
+    Serial.print("AKTUALNI STAV: ");
     Serial.println(aktualniStav);
   }
+
+  // if (aktualniStav != predchoziStavAutomatu && debugMode) {
+  //   Serial.print("Zmena stavu z ");
+  //   Serial.print(predchoziStavAutomatu);
+  //   Serial.print(" na ");
+  //   Serial.println(aktualniStav);
+  // }
 }

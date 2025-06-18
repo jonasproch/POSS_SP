@@ -21,7 +21,7 @@ const int inMotorLevy2 = 46;
 int rychlostJizdy = 120;
 int minRychlost = 50;
 int maxRychlost = 150;
-int rychlostOtaceni = 100;
+int rychlostOtaceni = 130;
 
 // Stavy senzoru
 #define STAV_ROVNE 0b1001
