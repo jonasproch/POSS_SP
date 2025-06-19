@@ -39,6 +39,10 @@ enum State {
 extern State aktualniStav;
 extern TypKrizovatky detekovanyTypKrizovatky;
 
+// Cesta
+extern String cestaMapping = "";
+extern String cestaOptim = "";
+
 // Levý motor
 extern const int pwmMotorPravy;
 extern const int inMotorPravy1;
