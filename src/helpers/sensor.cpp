@@ -44,52 +44,23 @@ int filtrujSenzor() {
   }
 
   for (int state : states) {
-    if (counts[state] == 0) break;
+    if (counts[state] == 0)
+      break;
 
     if (state != 0 || state != 8 || state != 1 || state != 15) {
       return state;
     }
 
-    if (counts[state] >= 3) {
+    if (counts[state] >= 5 && (state != 0 || state != 8 || state != 1)) {
+      return state;
+    }
+
+    if (counts[state] >= 4 && state == 15) {
       return state;
     }
   }
 
   return 9;
-  // static int posledniHodnoty[5] = {-1, -1, -1, -1, -1};
-  // static byte index = 0;
-  // // Načtení nové hodnoty ze senzoru
-  // byte newValue = RGBLineFollower.getPositionState();
-
-  // if (posledniHodnoty[0] == -1) {
-  //   for (int i = 0; i < 5; ++i) {
-  //     posledniHodnoty[i] = newValue;
-  //   }
-  // }
-
-  // posledniHodnoty[index] = newValue;
-  // index = (index + 1) % 5;
-  // int counts[16] = {0};
-
-  // for (int i = 0; i < 5; ++i) {
-  //   if (posledniHodnoty[i] >= 0 && posledniHodnoty[i] < 16) {
-  //     counts[posledniHodnoty[i]]++;
-  //   }
-  // }
-
-  // int majorState = posledniHodnoty[index];
-  // int maxCount = 0;
-
-  // for (int i = 0; i < 16; ++i) {
-  //   if (counts[i] > maxCount) {
-  //     maxCount = counts[i];
-  //     majorState = i;
-  //   }
-  // }
-
-  // Serial.print("Majority bitmask: ");
-  // Serial.println(majorState);
-  // return majorState;
 }
 
 bool jeMoznostLeva() {

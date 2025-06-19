@@ -139,36 +139,36 @@ void stavovyAutomat() {
       break;
     }
 
-    // case MAPOVANI_OVERUJI_ROVNE: {
-    //   Serial.println("hit MAPOVANI_OVERUJI_ROVNE");
+      // case MAPOVANI_OVERUJI_ROVNE: {
+      //   Serial.println("hit MAPOVANI_OVERUJI_ROVNE");
 
-    //   levyMotorVpred(rychlostJizdy);
-    //   pravyMotorVpred(rychlostJizdy);
-    //   delay(100);
+      //   levyMotorVpred(rychlostJizdy);
+      //   pravyMotorVpred(rychlostJizdy);
+      //   delay(100);
 
-    //   zastavVse();
-    //   delay(100);
+      //   zastavVse();
+      //   delay(100);
 
-    //   RGBLineFollower.loop();
-    //   int stavPoPopojeti = filtrujSenzor();
-    //   delay(100);
+      //   RGBLineFollower.loop();
+      //   int stavPoPopojeti = filtrujSenzor();
+      //   delay(100);
 
-    //   RGBLineFollower.loop();
-    //   stavPoPopojeti = filtrujSenzor();
+      //   RGBLineFollower.loop();
+      //   stavPoPopojeti = filtrujSenzor();
 
-    //   if (stavPoPopojeti == 9) {
-    //     aktualniStav = MAPOVANI_JEDU;
-    //   } else {
-    //     levyMotorVzad(rychlostJizdy);
-    //     pravyMotorVzad(rychlostJizdy);
-    //     delay(100);
+      //   if (stavPoPopojeti == 9) {
+      //     aktualniStav = MAPOVANI_JEDU;
+      //   } else {
+      //     levyMotorVzad(rychlostJizdy);
+      //     pravyMotorVzad(rychlostJizdy);
+      //     delay(100);
 
-    //     zastavVse();
-    //     aktualniStav = MAPOVANI_OTACIM_VPRAVO;
-    //   }
+      //     zastavVse();
+      //     aktualniStav = MAPOVANI_OTACIM_VPRAVO;
+      //   }
 
-    //   break;
-    // }
+      //   break;
+      // }
 
     case MAPOVANI_OTACIM_VLEVO: {
       zastavVse();
@@ -195,6 +195,11 @@ void stavovyAutomat() {
         delay(10);
 
         int stav = filtrujSenzor();
+
+        if (stav == 0) {
+          aktualniStav = CIL;
+          break;
+        }
 
         if (stav == 9) {
           turningLeft = false;
